@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+
+before_install:
+  - docker build -t dockerglam/react-test -f ./client/Dockerfile.dev
+
+script:
+  - docker run dockerglam/react-test npm test --  --coverage
+
+after_success:
+  - docker build -t dockerglam/multi-client ./client
+  - docker build -t dockerglam/multi-nginx ./nginx
+  - docker build -t dockerglam/multi-server ./server
+  - docker build -t dockerglam/multi-worker ./worker
+  #Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Take those images and push them to docker hub
+  - docker push dockerglam/multi-client
+  - docker push dockerglam/multi-nginx
+  - docker push dockerglam/multi-server  
+  - docker push dockerglam/multi-worker
