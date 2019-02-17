@@ -21,3 +21,4 @@ after_success:
   - docker push dockerglam/multi-nginx
   - docker push dockerglam/multi-server  
   - docker push dockerglam/multi-worker
+  
